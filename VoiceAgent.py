@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 import speech_recognition
 import pyttsx3
 import re
@@ -42,6 +44,27 @@ def record_and_recognize_audio(*args: tuple):
         return recognized_data
 
 
+
+def assistant():
+    time_prompt = ["сколько время", "сколько времени", "время"]
+    date_prompt = ["какое сегодня число", "дата"]
+    while True:
+        voice_input = record_and_recognize_audio()
+        recognition_filter(voice_input)
+        say(voice_input)
+        print(voice_input)
+        if voice_input in date_prompt:
+            current_date = date.today()
+            result = str(current_date.day) + " " + str(current_date.month) + " " + str(current_date.year)
+            say(result)
+        elif voice_input in time_prompt:
+            current_time = datetime.now().time()
+            result = str(current_time).split(":")[0] + " " + str(current_time).split(":")[1]
+            say(result)
+        elif voice_input == "стоп":  # окончание работы по команде "стоп"
+            say("до свидания")
+            break
+
 def get_nodes_identifiers(data):
     data_list = data.split(' ')
     identifier_1 = []
@@ -65,7 +88,7 @@ def get_nodes_identifiers(data):
 
 
 def recognition_filter(data: str):
-    if "построй дугу" in data:
+    if "построить дугу" in data:
         get_nodes_identifiers(data)
 
 
@@ -74,8 +97,4 @@ if __name__ == "__main__":
 
     recognizer = speech_recognition.Recognizer()
     microphone = speech_recognition.Microphone()
-    data = record_and_recognize_audio()
-    recognition_filter(data)
-
-    print(data)
-    say(data)
+    assistant()
