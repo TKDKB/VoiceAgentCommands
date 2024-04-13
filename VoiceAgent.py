@@ -65,35 +65,42 @@ def assistant():
             say("до свидания")
             break
 
-def get_nodes_identifiers(data):
+def get_nodes_identifiers(data, flag):
     data_list = data.split(' ')
     identifier_1 = []
     identifier_2 = []
     end_words_list = ["до", "к", "в"]
+    border = 0
     for end_word in end_words_list:
         if end_word in data_list:
             border = data_list.index(end_word)
             break
 
-    for word in data_list[:border]:
-        if re.match(r'^[a-zA-Z]+$', word):
-            identifier_1.append(word)
+    if border:
+        for word in data_list[:border]:
+            if re.match(r'^[a-zA-Z]+$', word):
+                identifier_1.append(word)
 
-    for word in data_list[border:]:
-        if re.match(r'^[a-zA-Z]+$', word):
-            identifier_2.append(word)
+        for word in data_list[border:]:
+            if re.match(r'^[a-zA-Z]+$', word):
+                identifier_2.append(word)
 
-    print(identifier_1)
-    print(identifier_2)
+        print(identifier_1)
+        print(identifier_2)
+
+    else:
+        print("Запрос не соответствует стандартному шаблону")
 
 
 def recognition_filter(data: str):
     if "построить дугу" in data:
-        get_nodes_identifiers(data)
+        get_nodes_identifiers(data,True)
+    elif "удалить дугу" in data:
+        get_nodes_identifiers(data,False)
 
 
 if __name__ == "__main__":
-    create_edge_pattern = "Построй дугу из 'identifier' в 'identifier'"
+    # create_edge_pattern = "Построй дугу из 'identifier' в 'identifier'"
 
     recognizer = speech_recognition.Recognizer()
     microphone = speech_recognition.Microphone()
